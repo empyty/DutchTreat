@@ -23,10 +23,20 @@ namespace DutchTreat
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.Run(async (context) =>
+            else
             {
-                await context.Response.WriteAsync("Hello World!");
+                app.UseExceptionHandler("/error");
+            }
+
+            app.UseStaticFiles();
+            app.UseNodeModules(env);
+
+            app.UseMvc(cfg =>
+            {
+                cfg.MapRoute("Default", 
+                    "{controller}/{action}/{id?}", 
+                    new {  controller = "App",
+                Action = "Index" });
             });
         }
     }
