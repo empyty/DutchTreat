@@ -1,6 +1,7 @@
 ﻿using DutchTreat.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DutchTreat.Data
@@ -32,9 +33,25 @@ namespace DutchTreat.Data
                 .ToList();
         }
 
+        public Order GetOrderById(int id)
+        {
+            return context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .FirstOrDefault(o => o.Id == id);
+        }
+
         public bool SaveChanges()
         {
             return context.SaveChanges() > 0;
+        }
+
+        public IEnumerable<Order> GetAllOrders()
+        {
+            return context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .ToList();
         }
     }
 }
