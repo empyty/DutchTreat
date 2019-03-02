@@ -27,21 +27,20 @@ namespace DutchTreat.Data
                 var filepath = Path.Combine(hosting.ContentRootPath, "Data/art.json");
                 var json = File.ReadAllText(filepath);
                 var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(json);
-                IEnumerable<Product> enumerable = products as Product[] ?? products.ToArray();
-                context.Products.AddRange(enumerable);
+                context.Products.AddRange(products);
 
-                var order = context.Orders.FirstOrDefault(o => o.Id == 1);
+                var order = context.Orders.Where(o => o.Id == 1).FirstOrDefault();
                 if (order != null)
                 {
-                    order.Items = new List<OrderItem>();
+                    order.Items = new List<OrderItem>()
                     {
                         new OrderItem()
                         {
-                            Product = enumerable.First(),
+                            Product = products.First(),
                             Quantity = 5,
-                            UnitPrice = enumerable.First().Price
-                        };
-                    }
+                            UnitPrice = products.First().Price
+                        }
+                    };
                 }
                 context.SaveChanges();
             }
