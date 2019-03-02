@@ -1,4 +1,5 @@
-﻿using DutchTreat.Data;
+﻿using AutoMapper;
+using DutchTreat.Data;
 using DutchTreat.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,8 @@ namespace DutchTreat
             {
                 cfg.UseSqlServer(config.GetConnectionString("DutchConnectionString"));
             });
+
+            services.AddAutoMapper();
 
             services.AddTransient<DutchSeeder>();
 
