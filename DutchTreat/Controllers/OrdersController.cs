@@ -12,29 +12,31 @@ namespace DutchTreat.Controllers
     [Route("api/[Controller]")]
     public class OrdersController : Controller
     {
-        private readonly IDutchRepository repository;
-        private readonly ILogger<OrdersController> logger;
-        private readonly IMapper mapper;
+        private readonly IDutchRepository _repository;
+        private readonly ILogger<OrdersController> _logger;
+        private readonly IMapper _mapper;
 
         public OrdersController(IDutchRepository repository,
             ILogger<OrdersController> logger,
             IMapper mapper)
         {
-            this.mapper = mapper;
-            this.repository = repository;
-            this.logger = logger;
+            _mapper = mapper;
+            _repository = repository;
+            _logger = logger;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(bool includeItems = true)
         {
             try
             {
-                return Ok(mapper.Map<IEnumerable<Order>, IEnumerable<OrderModel>>(repository.GetAllOrders()));
+                var results = _repository.GetAllOrders(includeItems);
+
+                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderModel>>(results));
             }
             catch (Exception e)
             {
-                logger.LogError($"Failed to get orders: {e}");
+                _logger.LogError($"Failed to get orders: {e}");
                 return BadRequest("Failed to get orders");
             }
         }
@@ -44,10 +46,10 @@ namespace DutchTreat.Controllers
         {
             try
             {
-                var order = repository.GetOrderById(id);
+                var order = _repository.GetOrderById(id);
                 if (order != null)
                 {
-                    return Ok(mapper.Map<Order, OrderModel>(order));
+                    return Ok(_mapper.Map<Order, OrderModel>(order));
                 }
                 else
                 {
@@ -56,7 +58,7 @@ namespace DutchTreat.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError($"Failed to get order: {e}");
+                _logger.LogError($"Failed to get order: {e}");
                 return BadRequest("Failed to get order");
             }
         }
@@ -68,17 +70,17 @@ namespace DutchTreat.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var newOrder = mapper.Map<OrderModel, Order>(model);
+                    var newOrder = _mapper.Map<OrderModel, Order>(model);
 
                     if (newOrder.OrderDate == DateTime.MinValue)
                     {
                         newOrder.OrderDate = DateTime.Now;
                     }
 
-                    repository.AddEntity(model);
-                    if (repository.SaveAll())
+                    _repository.AddEntity(model);
+                    if (_repository.SaveAll())
                     {
-                        return Created($"/api/orders/{newOrder.Id}", mapper.Map<Order, OrderModel>(newOrder));
+                        return Created($"/api/orders/{newOrder.Id}", _mapper.Map<Order, OrderModel>(newOrder));
                     }
                 }
                 else
@@ -88,7 +90,7 @@ namespace DutchTreat.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError($"Failed to save new order: {e}");
+                _logger.LogError($"Failed to save new order: {e}");
             }
             return BadRequest("Failed to save new order");
         }

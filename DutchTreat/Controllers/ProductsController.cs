@@ -12,13 +12,13 @@ namespace DutchTreat.Controllers
     [Produces("application/json")]
     public class ProductsController : ControllerBase
     {
-        private readonly IDutchRepository repository;
-        private readonly ILogger<ProductsController> logger;
+        private readonly IDutchRepository _repository;
+        private readonly ILogger<ProductsController> _logger;
 
         public ProductsController(IDutchRepository repository, ILogger<ProductsController> logger)
         {
-            this.repository = repository;
-            this.logger = logger;
+            _repository = repository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -28,11 +28,11 @@ namespace DutchTreat.Controllers
         {
             try
             {
-                return Ok(repository.GetAllProducts());
+                return Ok(_repository.GetAllProducts());
             }
             catch (Exception e)
             {
-                logger.LogError($"Failed to get all products: {e}");
+                _logger.LogError($"Failed to get all products: {e}");
                 return BadRequest("Failed to get all products");
             }
         }

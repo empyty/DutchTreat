@@ -13,11 +13,11 @@ namespace DutchTreat
 {
     public class Startup
     {
-        private readonly IConfiguration config;
+        private readonly IConfiguration _config;
 
         public Startup(IConfiguration config)
         {
-            this.config = config;
+            _config = config;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -26,7 +26,7 @@ namespace DutchTreat
         {
             services.AddDbContext<DutchContext>(cfg =>
             {
-                cfg.UseSqlServer(config.GetConnectionString("DutchConnectionString"));
+                cfg.UseSqlServer(_config.GetConnectionString("DutchConnectionString"));
             });
 
             services.AddAutoMapper();
