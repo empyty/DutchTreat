@@ -1,5 +1,4 @@
-﻿using System;
-using DutchTreat.Data.Entities;
+﻿using DutchTreat.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DutchTreat.Data
