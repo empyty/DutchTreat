@@ -8,56 +8,63 @@ namespace DutchTreat.Data
 {
     public class DutchRepository : IDutchRepository
     {
-        private readonly DutchContext context;
-        private readonly ILogger<DutchRepository> logger;
+        private readonly DutchContext _context;
+        private readonly ILogger<DutchRepository> _logger;
 
         public DutchRepository(DutchContext context, ILogger<DutchRepository> logger)
         {
-            this.context = context;
-            this.logger = logger;
+            _context = context;
+            _logger = logger;
         }
 
         public IEnumerable<Product> GetAllProducts()
         {
-            logger.LogInformation("GetAllProducts was called");
+            _logger.LogInformation("GetAllProducts was called");
 
-            return context.Products
+            return _context.Products
                 .OrderBy(p => p.Title)
                 .ToList();
         }
 
         public IEnumerable<Product> GetProductsByCategory(string category)
         {
-            return context.Products
+            return _context.Products
                 .Where(p => p.Category == category)
                 .ToList();
         }
 
+        public IEnumerable<Order> GetAllOrders(bool includeItems)
+        {
+            if (includeItems)
+            {
+                return _context.Orders
+                    .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                    .ToList();
+            }
+            else
+            {
+                return _context.Orders.ToList();
+            }
+        }
+
         public Order GetOrderById(int id)
         {
-            return context.Orders
+            return _context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
-                .Where(o => o.Id == id)
-                .FirstOrDefault();
+                .FirstOrDefault(o => o.Id == id);
         }
 
         public bool SaveAll()
         {
-            return context.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
 
         public void AddEntity(object model)
         {
-            context.Add(model);
+            _context.Add(model);
         }
 
-        public IEnumerable<Order> GetAllOrders()
-        {
-            return context.Orders
-                .Include(o => o.Items)
-                .ThenInclude(i => i.Product)
-                .ToList();
-        }
     }
 }
