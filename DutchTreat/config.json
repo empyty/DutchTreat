@@ -8,7 +8,12 @@
   "Logging": {
     "LogLevel": {
       "DutchTreat": "Information",
-      "Microsoft": "Warning" 
-    } 
+      "Microsoft": "Warning"
+    }
+  },
+  "Tokens": {
+    "Key": "afa;fgadgd;g;adg;da;g;sdg;hr;hj;d;hfd",
+    "Issuer": "localhost",
+    "Audience":  "users" 
   }
 }
