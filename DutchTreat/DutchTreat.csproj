@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,16 @@
 
   <ItemGroup>
     <None Include="node_modules/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\ts\main.ts" />
+    <Content Remove="wwwroot\ts\storecustomer.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\ts\main.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\storecustomer.ts" />
   </ItemGroup>
 
 </Project>
