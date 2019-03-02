@@ -38,10 +38,11 @@ namespace DutchTreat.Data
             return context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
-                .FirstOrDefault(o => o.Id == id);
+                .Where(o => o.Id == id)
+                .FirstOrDefault();
         }
 
-        public bool SaveChanges()
+        public bool SaveAll()
         {
             return context.SaveChanges() > 0;
         }
