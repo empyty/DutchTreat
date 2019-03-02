@@ -9,40 +9,41 @@ namespace DutchTreat.Data
 {
     public class DutchSeeder
     {
-        private readonly DutchContext context;
-        private readonly IHostingEnvironment hosting;
+        private readonly DutchContext _context;
+        private readonly IHostingEnvironment _hosting;
 
         public DutchSeeder(DutchContext context, IHostingEnvironment hosting)
         {
-            this.context = context;
-            this.hosting = hosting;
+            _context = context;
+            _hosting = hosting;
         }
 
         public void Seed()
         {
-            context.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
 
-            if (!context.Products.Any())
+            if (!_context.Products.Any())
             {
-                var filepath = Path.Combine(hosting.ContentRootPath, "Data/art.json");
+                var filepath = Path.Combine(_hosting.ContentRootPath, "Data/art.json");
                 var json = File.ReadAllText(filepath);
                 var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(json);
-                context.Products.AddRange(products);
+                IEnumerable<Product> enumerable = products as Product[] ?? products.ToArray();
+                _context.Products.AddRange(enumerable);
 
-                var order = context.Orders.Where(o => o.Id == 1).FirstOrDefault();
+                var order = _context.Orders.FirstOrDefault(o => o.Id == 1);
                 if (order != null)
                 {
                     order.Items = new List<OrderItem>()
                     {
                         new OrderItem()
                         {
-                            Product = products.First(),
+                            Product = enumerable.First(),
                             Quantity = 5,
-                            UnitPrice = products.First().Price
+                            UnitPrice = enumerable.First().Price
                         }
                     };
                 }
-                context.SaveChanges();
+                _context.SaveChanges();
             }
         }
     }
