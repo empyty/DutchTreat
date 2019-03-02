@@ -10,7 +10,7 @@ namespace DutchTreat
     {
         public static void Main(string[] args)
         {
-            var host = CreateWebHostBuilder(args);
+            var host = CreateWebHostBuilder(args).Build();
 
             SeedDb(host);
 
@@ -28,11 +28,10 @@ namespace DutchTreat
             }
         }
 
-        public static IWebHost CreateWebHostBuilder(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(SetupConfiguration)
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
 
         private static void SetupConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder builder)
         {
