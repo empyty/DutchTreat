@@ -47,6 +47,11 @@ namespace DutchTreat.Data
             return context.SaveChanges() > 0;
         }
 
+        public void AddEntity(object model)
+        {
+            context.Add(model);
+        }
+
         public IEnumerable<Order> GetAllOrders()
         {
             return context.Orders
