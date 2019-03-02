@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using AutoMapper;
 using DutchTreat.Data.Entities;
+using DutchTreat.Models;
 
 namespace DutchTreat.Controllers
 {
@@ -11,9 +14,13 @@ namespace DutchTreat.Controllers
     {
         private readonly IDutchRepository repository;
         private readonly ILogger<OrdersController> logger;
+        private readonly IMapper mapper;
 
-        public OrdersController(IDutchRepository repository, ILogger<OrdersController> logger)
+        public OrdersController(IDutchRepository repository,
+            ILogger<OrdersController> logger,
+            IMapper mapper)
         {
+            this.mapper = mapper;
             this.repository = repository;
             this.logger = logger;
         }
@@ -23,7 +30,7 @@ namespace DutchTreat.Controllers
         {
             try
             {
-                return Ok(repository.GetAllOrders());
+                return Ok(mapper.Map<IEnumerable<Order>, IEnumerable<OrderModel>>(repository.GetAllOrders()));
             }
             catch (Exception e)
             {
@@ -40,7 +47,7 @@ namespace DutchTreat.Controllers
                 var order = repository.GetOrderById(id);
                 if (order != null)
                 {
-                    return Ok(order);
+                    return Ok(mapper.Map<Order, OrderModel>(order));
                 }
                 else
                 {
@@ -55,14 +62,28 @@ namespace DutchTreat.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Order model)
+        public IActionResult Post([FromBody]OrderModel model)
         {
             try
             {
-                repository.AddEntity(model);
-                if (repository.SaveAll())
+                if (ModelState.IsValid)
                 {
-                    return Created($"/api/orders/{model.Id}", model);
+                    var newOrder = mapper.Map<OrderModel, Order>(model);
+
+                    if (newOrder.OrderDate == DateTime.MinValue)
+                    {
+                        newOrder.OrderDate = DateTime.Now;
+                    }
+
+                    repository.AddEntity(model);
+                    if (repository.SaveAll())
+                    {
+                        return Created($"/api/orders/{newOrder.Id}", mapper.Map<Order, OrderModel>(newOrder));
+                    }
+                }
+                else
+                {
+                    return BadRequest(ModelState);
                 }
             }
             catch (Exception e)
