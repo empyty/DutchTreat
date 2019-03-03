@@ -1,6 +1,7 @@
 ﻿using DutchTreat.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using DutchTreat.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -70,6 +71,16 @@ namespace DutchTreat.Data
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .FirstOrDefault(o => o.Id == id && o.User.UserName == username);
+        }
+
+        public void AddOrder(Order newOrder)
+        {
+            foreach (var item in newOrder.Items)
+            {
+                item.Product = _context.Products.Find(item.Product.Id);
+            }
+
+            AddEntity(newOrder);
         }
 
         public bool SaveAll()
