@@ -1,14 +1,16 @@
 import * as tslib_1 from "tslib";
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { AppComponent } from "./app.component";
+import { ProductList } from "./shop/productList.component";
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = tslib_1.__decorate([
         NgModule({
             declarations: [
-                AppComponent
+                AppComponent,
+                ProductList
             ],
             imports: [
                 BrowserModule
