@@ -20,8 +20,8 @@ ng start
 ### Screenshots:
 Shop:
 
-![Shop](screenshots/shop.jpg)
+![Shop](screenshots/Shop.jpg)
 
 Shopping Cart:
 
-![Cart](screenshots/cart.jpg)
+![Cart](screenshots/Cart.jpg)
